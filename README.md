@@ -13,17 +13,25 @@ This RSS feed is then intended to be fed into [DownloadStation](https://help.syn
 Dependencies
 ---
 
-Install all python dependencies with pip:
+Install these dependencies first.
+
+System dependencies
+===
+
+The [lxml](https://pypi.python.org/pypi/lxml) requires `libxml2` and `libxslt` packages, so you need to install these
+on your system first. Here's how to do that on Debian or Ubuntu:
+
+``` bash
+apt-get install libxml2-dev libxslt1-dev
+```
+
+Python dependencies
+===
+
+Now install all python dependencies with pip:
 
 ``` bash
 pip install -r requirements.txt
-```
-
-*Note:* on Debian systems, some extra dependencies are often needed to run [lxml](https://pypi.python.org/pypi/lxml).
-You may need to install these system dependencies before running `pip install` again:
-
-``` bash
-apt-get install libxml2-dev libxslt1-dev python-dev
 ```
 
 Usage
