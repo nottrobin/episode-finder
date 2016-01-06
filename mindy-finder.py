@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import urllib2
+import requests
 import json
 import re
 from feedgen.feed import FeedGenerator
 
-response = urllib2.urlopen('https://kat.cr/json.php?q=mindy+project+720')
-data = json.load(response)
+response = requests.get('https://kat.cr/json.php?q=mindy+project+720', verify=False)
+data = json.loads(response.text)
 
 torrents = data['list']
 
@@ -18,18 +18,21 @@ best_torrent = None
 # Find the latest episode
 for torrent in torrents:
     parts = re.search('S([0-9]{2})E([0-9]{2})', torrent['title'])
-    torrent['series'] = int(parts.groups(1)[0])
-    torrent['episode'] = int(parts.groups(1)[1])
 
-    if torrent['series'] > latest_series:
-        latest_series = torrent['series']
+    if parts:
+        torrent['series'] = int(parts.groups(1)[0])
+        torrent['episode'] = int(parts.groups(1)[1])
 
-    if torrent['episode'] > latest_episode:
-        latest_episode = torrent['episode']
+        if torrent['series'] > latest_series:
+            latest_series = torrent['series']
+
+        if torrent['episode'] > latest_episode:
+            latest_episode = torrent['episode']
 
 # Find the best torrent of the latest episode
 for torrent in torrents:
     if (
+        "series" in torrent and "episode" in torrent and
         torrent['series'] == latest_series and
         torrent['episode'] == latest_episode
     ):
@@ -50,3 +53,4 @@ mindy_episode.link(href=best_torrent['torrentLink'])
 mindy_episode.description(best_torrent['title'])
 
 print mindy_feed.rss_str(pretty=True)
+
